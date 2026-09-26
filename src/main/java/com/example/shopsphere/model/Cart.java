@@ -25,7 +25,7 @@ public class Cart extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CartItem> items = new ArrayList<>();
 
 	protected Cart() { }
@@ -37,7 +37,4 @@ public class Cart extends BaseEntity {
 	public User getUser() { return user; }
 	public void setUser(User user) { this.user = user; }
 	public List<CartItem> getItems() { return items; }
-}
-enum CartStatus {
-	ACTIVE, CHECKED_OUT, ABANDONED
 }

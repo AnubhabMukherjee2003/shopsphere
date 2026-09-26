@@ -60,6 +60,3 @@ public class Product extends BaseEntity {
 	public Category getCategory() { return category; }
 	public void setCategory(Category category) { this.category = category; }
 }
-enum ProductStatus {
-	ACTIVE, INACTIVE, OUT_OF_STOCK, DISCONTINUED, DELETED
-}

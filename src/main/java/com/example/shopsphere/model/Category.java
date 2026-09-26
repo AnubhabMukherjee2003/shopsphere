@@ -41,6 +41,3 @@ public class Category extends BaseEntity {
 	public void setStatus(CategoryStatus status) { this.status = status; }
 	public List<Product> getProducts() { return products; }
 }
-enum CategoryStatus {
-	ACTIVE, INACTIVE, DELETED
-}

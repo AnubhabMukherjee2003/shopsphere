@@ -49,6 +49,3 @@ public class Order extends BaseEntity {
 	public void setUser(User user) { this.user = user; }
 	public List<OrderItem> getItems() { return items; }
 }
-enum OrderStatus {
-	CREATED, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-}

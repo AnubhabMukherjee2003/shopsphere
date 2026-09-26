@@ -66,6 +66,3 @@ public class User extends BaseEntity {
 	public void setCart(Cart cart) { this.cart = cart; }
 	public List<Order> getOrders() { return orders; }
 }
-enum UserStatus {
-	ACTIVE, INACTIVE, BLOCKED, DELETED;
-}
