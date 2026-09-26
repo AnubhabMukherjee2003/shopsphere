@@ -9,10 +9,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "categories")
 public class Category extends BaseEntity {
+	@NotBlank
 	@Column(nullable = false, unique = true)
 	private String name;
 	private String description;

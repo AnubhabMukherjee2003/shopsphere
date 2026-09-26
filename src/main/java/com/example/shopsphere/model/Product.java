@@ -12,10 +12,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "products")
 public class Product extends BaseEntity {
+	@NotBlank
 	@Column(nullable = false)
 	private String name;
 	private String description;

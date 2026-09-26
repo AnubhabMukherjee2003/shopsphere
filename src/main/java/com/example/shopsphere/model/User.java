@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -18,6 +19,7 @@ import jakarta.validation.constraints.NotBlank;
 @Table(name = "users")
 public class User extends BaseEntity {
 	@NotBlank
+	@Column(nullable = false)
 	private String name;
 
 	@Email
@@ -35,10 +37,10 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private UserStatus status = UserStatus.ACTIVE;
 
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Order> orders = new ArrayList<>();
 
 	protected User() { }
@@ -47,6 +49,7 @@ public class User extends BaseEntity {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+		this.cart = new Cart(this);
 	}
 
 	public String getName() { return name; }
@@ -64,5 +67,5 @@ public class User extends BaseEntity {
 	public List<Order> getOrders() { return orders; }
 }
 enum UserStatus {
-	ACTIVE, INACTIVE, BLOCKED, DELETED
+	ACTIVE, INACTIVE, BLOCKED, DELETED;
 }

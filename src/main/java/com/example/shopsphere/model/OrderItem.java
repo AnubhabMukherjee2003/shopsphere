@@ -19,7 +19,7 @@ public class OrderItem extends BaseEntity {
 	private int quantity;
 
 	@DecimalMin(value = "0.01")
-	@Column(nullable = false, precision = 19, scale = 2)
+	@Column(nullable = false, updatable = false, precision = 19, scale = 2)
 	private BigDecimal unitPrice;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -42,7 +42,6 @@ public class OrderItem extends BaseEntity {
 	public int getQuantity() { return quantity; }
 	public void setQuantity(int quantity) { this.quantity = quantity; }
 	public BigDecimal getUnitPrice() { return unitPrice; }
-	public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
 	public Order getOrder() { return order; }
 	public void setOrder(Order order) { this.order = order; }
 	public Product getProduct() { return product; }
