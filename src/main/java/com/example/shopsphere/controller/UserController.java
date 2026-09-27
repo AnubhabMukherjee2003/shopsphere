@@ -1,6 +1,7 @@
 package com.example.shopsphere.controller;
 
 import org.springframework.http.ResponseEntity;
+import com.example.shopsphere.dto.LoginRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +23,11 @@ public class UserController {
 	@PostMapping("/register")
 	public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegisterRequest request) {
 		return ResponseEntity.status(201).body(UserResponse.fromEntity(userService.registerUser(request.toEntity())));
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+		UserResponse response = UserResponse.fromEntity(userService.login(request.getEmail(), request.getPassword()));
+		return ResponseEntity.ok().header("usr-d", response.getId().toString()).body(response);
 	}
 }

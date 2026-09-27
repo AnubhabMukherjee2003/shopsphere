@@ -1,0 +1,106 @@
+{
+  "info": {
+    "name": "ShopSphere API",
+    "description": "Development collection. Login stores the user id and sends it as usr-d on cart and order requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "userId", "value": "" },
+    { "key": "usr-d", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "product1Id", "value": "" },
+    { "key": "product2Id", "value": "" },
+    { "key": "cartItemId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Register demo user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo@example.com\",\n  \"password\": \"demo123\",\n  \"phone\": \"9999999999\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/user/register", "host": ["{{baseUrl}}"], "path": ["api", "user", "register"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Created', () => pm.response.to.have.status(201));"] } }]
+        },
+        {
+          "name": "Login and save usr-d",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"demo@example.com\",\n  \"password\": \"demo123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/user/login", "host": ["{{baseUrl}}"], "path": ["api", "user", "login"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Login succeeded', () => pm.response.to.have.status(200));", "const body = pm.response.json();", "pm.collectionVariables.set('userId', String(body.id));", "pm.collectionVariables.set('usr-d', String(body.id));"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo Electronics\",\n  \"description\": \"Demo category\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/categories", "host": ["{{baseUrl}}"], "path": ["api", "categories"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('categoryId', String(pm.response.json().id));"] } }]
+        },
+        { "name": "List categories", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/categories", "host": ["{{baseUrl}}"], "path": ["api", "categories"] } } },
+        { "name": "Get category", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "categories", "{{categoryId}}"] } } },
+        {
+          "name": "Update category",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Electronics\",\n  \"description\": \"Updated demo category\"\n}" }, "url": { "raw": "{{baseUrl}}/api/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "categories", "{{categoryId}}"] } }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create product 1",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo Laptop\",\n  \"description\": \"Demo product one\",\n  \"price\": 1000.00,\n  \"stockQuantity\": 10,\n  \"categoryId\": {{categoryId}}\n}" }, "url": { "raw": "{{baseUrl}}/api/products", "host": ["{{baseUrl}}"], "path": ["api", "products"] } },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('product1Id', String(pm.response.json().id));"] } }]
+        },
+        {
+          "name": "Create product 2",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo Mouse\",\n  \"description\": \"Demo product two\",\n  \"price\": 25.00,\n  \"stockQuantity\": 20,\n  \"categoryId\": {{categoryId}}\n}" }, "url": { "raw": "{{baseUrl}}/api/products", "host": ["{{baseUrl}}"], "path": ["api", "products"] } },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('product2Id', String(pm.response.json().id));"] } }]
+        },
+        { "name": "List products", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/products", "host": ["{{baseUrl}}"], "path": ["api", "products"] } } },
+        { "name": "Get product 1", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/products/{{product1Id}}", "host": ["{{baseUrl}}"], "path": ["api", "products", "{{product1Id}}"] } } },
+        { "name": "Update product 1", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Laptop\",\n  \"description\": \"Updated demo product\",\n  \"price\": 1100.00,\n  \"stockQuantity\": 10,\n  \"categoryId\": {{categoryId}}\n}" }, "url": { "raw": "{{baseUrl}}/api/products/{{product1Id}}", "host": ["{{baseUrl}}"], "path": ["api", "products", "{{product1Id}}"] } } }
+      ]
+    },
+    {
+      "name": "Cart and Orders",
+      "item": [
+        { "name": "Get cart", "request": { "method": "GET", "header": [{ "key": "usr-d", "value": "{{usr-d}}" }], "url": { "raw": "{{baseUrl}}/api/cart", "host": ["{{baseUrl}}"], "path": ["api", "cart"] } } },
+        {
+          "name": "Add product 1 to cart",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "usr-d", "value": "{{usr-d}}" }], "body": { "mode": "raw", "raw": "{\n  \"productId\": {{product1Id}},\n  \"quantity\": 2\n}" }, "url": { "raw": "{{baseUrl}}/api/cart/items", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items"] } },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Added', () => pm.response.to.have.status(200));", "const items = pm.response.json().items;", "pm.collectionVariables.set('cartItemId', String(items[items.length - 1].id));"] } }]
+        },
+        { "name": "Add product 2 to cart", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "usr-d", "value": "{{usr-d}}" }], "body": { "mode": "raw", "raw": "{\n  \"productId\": {{product2Id}},\n  \"quantity\": 1\n}" }, "url": { "raw": "{{baseUrl}}/api/cart/items", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items"] } } },
+        { "name": "Update cart item", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "usr-d", "value": "{{usr-d}}" }], "body": { "mode": "raw", "raw": "{\n  \"quantity\": 3\n}" }, "url": { "raw": "{{baseUrl}}/api/cart/items/{{cartItemId}}", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items", "{{cartItemId}}"] } } },
+        {
+          "name": "Checkout selected product 1 only",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "usr-d", "value": "{{usr-d}}" }], "body": { "mode": "raw", "raw": "{\n  \"productIds\": [{{product1Id}}]\n}" }, "url": { "raw": "{{baseUrl}}/api/orders/checkout", "host": ["{{baseUrl}}"], "path": ["api", "orders", "checkout"] } },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Checkout succeeded', () => pm.response.to.have.status(200));", "pm.collectionVariables.set('orderId', String(pm.response.json().id));", "pm.test('Only selected product ordered', () => pm.expect(pm.response.json().items).to.have.length(1));"] } }]
+        },
+        { "name": "Get order", "request": { "method": "GET", "header": [{ "key": "usr-d", "value": "{{usr-d}}" }], "url": { "raw": "{{baseUrl}}/api/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "orders", "{{orderId}}"] } } },
+        { "name": "Get remaining cart item", "request": { "method": "GET", "header": [{ "key": "usr-d", "value": "{{usr-d}}" }], "url": { "raw": "{{baseUrl}}/api/cart", "host": ["{{baseUrl}}"], "path": ["api", "cart"] } } },
+        { "name": "Cancel order", "request": { "method": "PUT", "header": [{ "key": "usr-d", "value": "{{usr-d}}" }], "url": { "raw": "{{baseUrl}}/api/orders/{{orderId}}/cancel", "host": ["{{baseUrl}}"], "path": ["api", "orders", "{{orderId}}", "cancel"] } } },
+        { "name": "Delete cart item", "request": { "method": "DELETE", "header": [{ "key": "usr-d", "value": "{{usr-d}}" }], "url": { "raw": "{{baseUrl}}/api/cart/items/{{cartItemId}}", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items", "{{cartItemId}}"] } } },
+        { "name": "Clear cart", "request": { "method": "DELETE", "header": [{ "key": "usr-d", "value": "{{usr-d}}" }], "url": { "raw": "{{baseUrl}}/api/cart/items", "host": ["{{baseUrl}}"], "path": ["api", "cart", "items"] } } }
+      ]
+    }
+  ]
+}
