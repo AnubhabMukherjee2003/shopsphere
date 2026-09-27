@@ -1,12 +1,12 @@
 package com.example.shopsphere.controller;
 
 import org.springframework.http.ResponseEntity;
-import com.example.shopsphere.dto.LoginRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.shopsphere.dto.LoginRequest;
 import com.example.shopsphere.dto.UserRegisterRequest;
 import com.example.shopsphere.dto.UserResponse;
 import com.example.shopsphere.service.UserService;
