@@ -37,6 +37,10 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private UserStatus status = UserStatus.ACTIVE;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, columnDefinition = "varchar(20) default 'CUSTOMER'")
+	private Role role = Role.CUSTOMER;
+
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
@@ -62,6 +66,8 @@ public class User extends BaseEntity {
 	public void setPhone(String phone) { this.phone = phone; }
 	public UserStatus getStatus() { return status; }
 	public void setStatus(UserStatus status) { this.status = status; }
+	public Role getRole() { return role; }
+	public void setRole(Role role) { this.role = role; }
 	public Cart getCart() { return cart; }
 	public void setCart(Cart cart) { this.cart = cart; }
 	public List<Order> getOrders() { return orders; }

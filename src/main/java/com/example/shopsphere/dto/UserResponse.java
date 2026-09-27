@@ -8,6 +8,7 @@ public class UserResponse {
 	private String email;
 	private String phone;
 	private String status;
+	private String role;
 
 	public static UserResponse fromEntity(User user) {
 		UserResponse response = new UserResponse();
@@ -16,6 +17,7 @@ public class UserResponse {
 		response.email = user.getEmail();
 		response.phone = user.getPhone();
 		response.status = user.getStatus().name();
+		response.role = user.getRole() == null ? "CUSTOMER" : user.getRole().name();
 		return response;
 	}
 	public Long getId() { return id; }
@@ -23,4 +25,5 @@ public class UserResponse {
 	public String getEmail() { return email; }
 	public String getPhone() { return phone; }
 	public String getStatus() { return status; }
+	public String getRole() { return role; }
 }

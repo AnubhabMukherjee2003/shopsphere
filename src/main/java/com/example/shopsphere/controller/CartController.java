@@ -1,6 +1,7 @@
 package com.example.shopsphere.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import com.example.shopsphere.dto.CartItemRequest;
 import com.example.shopsphere.dto.CartItemUpdateRequest;
 import com.example.shopsphere.dto.CartResponse;
 import com.example.shopsphere.service.CartService;
+import com.example.shopsphere.security.AuthenticatedUser;
 
 import jakarta.validation.Valid;
 
@@ -26,29 +28,29 @@ public class CartController {
 	public CartController(CartService service) { this.service = service; }
 
 	@GetMapping
-	public ResponseEntity<CartResponse> get(@RequestHeader("usr-d") Long userId) {
-		return ResponseEntity.ok(CartResponse.fromEntity(service.getCart(userId)));
+	public ResponseEntity<CartResponse> get(@AuthenticationPrincipal AuthenticatedUser principal) {
+		return ResponseEntity.ok(CartResponse.fromEntity(service.getCart(principal.id())));
 	}
 
 	@PostMapping("/items")
-	public ResponseEntity<CartResponse> addItem(@RequestHeader("usr-d") Long userId, @Valid @RequestBody CartItemRequest request) {
-		return ResponseEntity.ok(CartResponse.fromEntity(service.addItem(userId, request)));
+	public ResponseEntity<CartResponse> addItem(@AuthenticationPrincipal AuthenticatedUser principal, @Valid @RequestBody CartItemRequest request) {
+		return ResponseEntity.ok(CartResponse.fromEntity(service.addItem(principal.id(), request)));
 	}
 
 	@PutMapping("/items/{cartItemId}")
-	public ResponseEntity<CartResponse> updateItem(@RequestHeader("usr-d") Long userId, @PathVariable Long cartItemId,
+	public ResponseEntity<CartResponse> updateItem(@AuthenticationPrincipal AuthenticatedUser principal, @PathVariable Long cartItemId,
 			@Valid @RequestBody CartItemUpdateRequest request) {
-		return ResponseEntity.ok(CartResponse.fromEntity(service.updateItem(userId, cartItemId, request.getQuantity())));
+		return ResponseEntity.ok(CartResponse.fromEntity(service.updateItem(principal.id(), cartItemId, request.getQuantity())));
 	}
 
 	@DeleteMapping("/items/{cartItemId}")
-	public ResponseEntity<CartResponse> deleteItem(@RequestHeader("usr-d") Long userId, @PathVariable Long cartItemId) {
-		return ResponseEntity.ok(CartResponse.fromEntity(service.deleteItem(userId, cartItemId)));
+	public ResponseEntity<CartResponse> deleteItem(@AuthenticationPrincipal AuthenticatedUser principal, @PathVariable Long cartItemId) {
+		return ResponseEntity.ok(CartResponse.fromEntity(service.deleteItem(principal.id(), cartItemId)));
 	}
 
 	@DeleteMapping("/items")
-	public ResponseEntity<Void> clear(@RequestHeader("usr-d") Long userId) {
-		service.clear(userId);
+	public ResponseEntity<Void> clear(@AuthenticationPrincipal AuthenticatedUser principal) {
+		service.clear(principal.id());
 		return ResponseEntity.noContent().build();
 	}
 }

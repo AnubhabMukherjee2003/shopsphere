@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.shopsphere.dto.AuthResponse;
 import com.example.shopsphere.dto.LoginRequest;
 import com.example.shopsphere.dto.UserRegisterRequest;
 import com.example.shopsphere.dto.UserResponse;
+import com.example.shopsphere.security.JwtService;
 import com.example.shopsphere.service.UserService;
 
 import jakarta.validation.Valid;
@@ -17,8 +19,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/user")
 public class UserController {
 	private final UserService userService;
+	private final JwtService jwtService;
 
-	public UserController(UserService userService) { this.userService = userService; }
+	public UserController(UserService userService, JwtService jwtService) {
+		this.userService = userService;
+		this.jwtService = jwtService;
+	}
 
 	@PostMapping("/register")
 	public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegisterRequest request) {
@@ -26,8 +32,9 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
-		UserResponse response = UserResponse.fromEntity(userService.login(request.getEmail(), request.getPassword()));
-		return ResponseEntity.ok().header("usr-d", response.getId().toString()).body(response);
+	public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+		var user = userService.login(request.getEmail(), request.getPassword());
+		String token = jwtService.generateToken(user);
+		return ResponseEntity.ok(new AuthResponse(token, UserResponse.fromEntity(user)));
 	}
 }

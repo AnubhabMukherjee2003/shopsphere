@@ -1,11 +1,16 @@
 {
   "info": {
     "name": "ShopSphere API",
-    "description": "Development collection. Login stores the user id and sends it as usr-d on cart and order requests.",
+    "description": "Development collection. Login stores the JWT. Catalog writes require an ADMIN token; cart and order requests use the logged-in token.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
     { "key": "userId", "value": "" },
     { "key": "usr-d", "value": "" },
     { "key": "categoryId", "value": "" },
@@ -44,7 +49,7 @@
             "body": { "mode": "raw", "raw": "{\n  \"email\": \"demo@example.com\",\n  \"password\": \"demo123\"\n}" },
             "url": { "raw": "{{baseUrl}}/api/user/login", "host": ["{{baseUrl}}"], "path": ["api", "user", "login"] }
           },
-          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Login succeeded', () => pm.response.to.have.status(200));", "const body = pm.response.json();", "pm.collectionVariables.set('userId', String(body.id));", "pm.collectionVariables.set('usr-d', String(body.id));"] } }]
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Login succeeded', () => pm.response.to.have.status(200));", "const body = pm.response.json();", "pm.collectionVariables.set('token', body.token);", "pm.collectionVariables.set('userId', String(body.user.id));", "pm.collectionVariables.set('usr-d', String(body.user.id));"] } }]
         }
       ]
     },
